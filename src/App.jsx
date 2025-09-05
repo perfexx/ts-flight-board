@@ -3,7 +3,26 @@ import { useFlights } from "./useFlights.js";
 import { FLIGHTS_URL } from "./config.js";
 
 export default function App() {
-  const { data, isLoading, isError, error } = useFlights({ url: FLIGHTS_URL });
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+    dataUpdatedAt,
+  } = useFlights({ url: FLIGHTS_URL });
+
+  // Keep the pulsing dot visible briefly so it’s noticeable
+  const [showPulse, setShowPulse] = React.useState(false);
+  React.useEffect(() => {
+    if (isFetching) {
+      setShowPulse(true);
+      return;
+    }
+    // when fetch ends, keep the indicator ~1.2s
+    const t = setTimeout(() => setShowPulse(false), 1200);
+    return () => clearTimeout(t);
+  }, [isFetching]);
 
   return (
     <div className="w-full max-w-screen-3xl mx-auto p-8">
@@ -12,10 +31,19 @@ export default function App() {
           <h1 className="text-3xl font-extrabold tracking-wide">
             PSM • Arrivals &amp; Departures
           </h1>
-          <p className="text-slate-400 text-sm">Live board</p>
+          <p className="text-slate-400 text-sm">
+            Source: {FLIGHTS_URL === "mock" ? "Mock JSON" : FLIGHTS_URL}
+          </p>
         </div>
-        <span className="text-xs text-slate-400">
-          Last updated: {new Date().toLocaleTimeString()}
+
+        <span className="text-xs text-slate-400 tabular-nums flex items-center gap-2">
+          Last updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"}
+          {showPulse && (
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-400/30 animate-pulse"
+              title="Refreshing"
+            />
+          )}
         </span>
       </header>
 
@@ -24,7 +52,9 @@ export default function App() {
         {isError && (
           <div className="p-6 text-rose-400">
             Error loading flights.
-            <pre className="mt-2 text-xs text-rose-300 whitespace-pre-wrap">{String(error?.message || error)}</pre>
+            <pre className="mt-2 text-xs text-rose-300 whitespace-pre-wrap">
+              {String(error?.message || error)}
+            </pre>
           </div>
         )}
         {data && <FlightTable flights={data.flights} />}
