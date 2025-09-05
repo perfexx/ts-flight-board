@@ -14,8 +14,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.87.1",
     "date-fns": "^4.1.0",
+    "prop-types": "^15.8.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-split-flap-effect": "^1.0.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

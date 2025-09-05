@@ -1,6 +1,12 @@
 import React from "react";
 import { useFlights } from "./useFlights.js";
 import { FLIGHTS_URL } from "./config.js";
+import SplitFlapWord from "./components/SplitFlatWord.jsx";
+import SplitFlapNumber from "./components/SplitFlatNumber.jsx";
+import SplitFlapGate from "./components/SplitFlatGate.jsx";
+import SplitFlapStatus from "./components/SplitFlapStatus.jsx";
+import SplitFlapTime from "./components/SplitFlapTime.jsx";
+import SplitFlapPlace from "./components/SplitFlapPlace.jsx";
 
 export default function App() {
   const {
@@ -29,14 +35,14 @@ export default function App() {
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-wide">
-            PSM • Arrivals &amp; Departures
+            {(data?.airport || "PSM")} • Arrivals &amp; Departures
           </h1>
-          <p className="text-slate-400 text-sm">
+          {/* <p className="text-slate-400 text-sm">
             Source: {FLIGHTS_URL === "mock" ? "Mock JSON" : FLIGHTS_URL}
-          </p>
+          </p> */}
         </div>
 
-        <span className="text-xs text-slate-400 tabular-nums flex items-center gap-2">
+        <span className="text-xs border-stone-300/60 tabular-nums flex items-center gap-2">
           Last updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"}
           {showPulse && (
             <span
@@ -47,8 +53,7 @@ export default function App() {
         </span>
       </header>
 
-      <div className="bg-slate-800/60 rounded-xl overflow-hidden ring-1 ring-slate-700/60">
-        {isLoading && <div className="p-6">Loading flights…</div>}
+      <div className="relative bg-stone-800/60 rounded-xl overflow-hidden ring-1 ring-stone-300/60">
         {isError && (
           <div className="p-6 text-rose-400">
             Error loading flights.
@@ -57,7 +62,20 @@ export default function App() {
             </pre>
           </div>
         )}
-        {data && <FlightTable flights={data.flights} />}
+
+        {/* Show cached table if present; only show loader before first data */}
+        {data ? (
+          <FlightTable flights={data.flights} />
+        ) : (
+          <div className="p-6">Loading flights…</div>
+        )}
+
+        {/* Optional: subtle badge while background refreshing */}
+        {/* {isFetching && (
+          <div className="absolute top-2 right-2 text-[11px] px-2 py-0.5 rounded bg-stone-700/70 text-stone-300 animate-pulse">
+            Refreshing…
+          </div>
+        )} */}
       </div>
     </div>
   );
@@ -68,9 +86,9 @@ function FlightTable({ flights }) {
     <div className="w-full">
       {/* desktop/tablet */}
       <table className="hidden md:table w-full border-collapse table-fixed">
-        <thead className="bg-slate-800/80">
-          <tr className="text-left text-slate-300">
-            <Th>Dir</Th>
+        <thead className="bg-[#333333]">
+          <tr className="text-left text-stone-300">
+            {/* <Th>Dir</Th> */}
             <Th>Airline</Th>
             <Th>Flight</Th>
             <Th>From/To</Th>
@@ -81,24 +99,43 @@ function FlightTable({ flights }) {
         </thead>
         <tbody>
           {flights.map((f) => (
-            <tr key={f.id} className="border-t border-slate-700/60 hover:bg-slate-800/50">
-              <Td>{f.dir || (f.origin ? "ARR" : "DEP")}</Td>
-              <Td>{f.airline}</Td>
-              <Td className="font-medium">{f.flightNo}</Td>
-              <Td>{f.origin || f.destination || "—"}</Td>
-              <Td>
-                {fmtTime(f.sched)}
-                {f.est ? (
-                  <>
-                    {" "}
-                    <span className="text-slate-400">→</span>{" "}
-                    <strong className="text-slate-100">{fmtTime(f.est)}</strong>
-                  </>
-                ) : null}
+            <tr key={f.id} className="border-t border-stone-300/60 bg-[#333333]">
+              {/* <Td>{f.dir || (f.origin ? "ARR" : "DEP")}</Td> */}
+              <Td className="leading-none text-left">
+                <div className="min-w-[12ch]">
+                  <SplitFlapWord value={f.airline} min={12} size="M" />
+                </div>
               </Td>
-              <Td>{f.gate ?? "—"}</Td>
-              <Td>
-                <StatusBadge status={f.status} />
+              <Td className="leading-none">
+                <div className="min-w-[6ch]">
+                  <SplitFlapNumber value={f.flightNo} min={6} size="M" />
+                </div>
+              </Td>
+              <Td className="leading-none">
+                <div className="min-w-[4ch]">
+                  <SplitFlapPlace value={f.origin || f.destination || "—"} min={3} size="M" />
+                </div>
+              </Td>
+              <Td className="leading-none">
+                <div className="flex items-center gap-2">
+                  <SplitFlapTime value={f.sched} size="M" />
+                  {f.est && (
+                    <>
+                      <span className="border-stone-300/60">→</span>
+                      <SplitFlapTime value={f.est} size="M" />
+                    </>
+                  )}
+                </div>
+              </Td>
+              <Td className="leading-none">
+                <div className="min-w-[3ch]">
+                  <SplitFlapGate value={f.gate ?? "—"} min={2} size="M" />
+                </div>
+              </Td>
+              <Td className="leading-none text-left">
+                <div className="min-w-[12ch]">
+                  <SplitFlapStatus value={f.status} size="M" />
+                </div>
               </Td>
             </tr>
           ))}
@@ -145,7 +182,7 @@ function FlightTable({ flights }) {
 }
 
 function Th({ children }) {
-  return <th className="py-3 px-4 text-xs font-semibold tracking-wide">{children}</th>;
+  return <th className="py-3 px-4 text-2xl font-semibold tracking-wide">{children}</th>;
 }
 function Td({ children }) {
   return <td className="py-3 px-4 text-sm">{children}</td>;
