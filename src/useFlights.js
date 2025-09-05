@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import * as z from "zod";
-import flightsMock from "./mock/flights.json"; // ✅ direct import so no fetch/path issues
+import flightsMock from "./mock/flights.json"; 
+import { API_HEADERS } from "./config.js";
 
 // --- schema (kept flexible for now) ---
 const Flight = z.object({
@@ -33,10 +34,10 @@ export function useFlights({
       if (url === "mock") {
         data = flightsMock;  // ← no fetch, guaranteed to work
       } else if (/^https?:\/\//i.test(url)) {
-        const r = await fetch(url, { cache: "no-store" });
+        const r = await fetch(url, { cache: "no-store", headers: API_HEADERS });
         if (!r.ok) throw new Error(`HTTP ${r.status} fetching ${url}`);
         data = await r.json();
-      } else {
+        } else {
         throw new Error(`Invalid URL for flights: ${url}`);
       }
 

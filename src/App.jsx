@@ -1,15 +1,18 @@
 import React from "react";
 import { useFlights } from "./useFlights.js";
+import { FLIGHTS_URL } from "./config.js";
 
 export default function App() {
-  const { data, isLoading, isError, error } = useFlights();
+  const { data, isLoading, isError, error } = useFlights({ url: FLIGHTS_URL });
 
   return (
     <div className="max-w-5xl mx-auto p-4">
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
         <div>
-          <h1 className="text-2xl font-bold">PSM Arrivals &amp; Departures</h1>
-          <p className="text-slate-400 text-sm">Live board (mock data for now)</p>
+          <h1 className="text-3xl font-extrabold tracking-wide">
+            PSM • Arrivals &amp; Departures
+          </h1>
+          <p className="text-slate-400 text-sm">Live board</p>
         </div>
         <span className="text-xs text-slate-400">
           Last updated: {new Date().toLocaleTimeString()}
