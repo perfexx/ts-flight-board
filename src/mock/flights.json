@@ -1,0 +1,41 @@
+{
+  "airport": "PSM",
+  "flights": [
+    {
+      "id": "PSM101-A",
+      "airline": "Allegiant",
+      "flightNo": "G4 101",
+      "origin": "ORD",
+      "destination": null,
+      "sched": "2025-09-05T18:10:00-04:00",
+      "est": "2025-09-05T18:05:00-04:00",
+      "gate": "2",
+      "status": "EARLY",
+      "dir": "ARR"
+    },
+    {
+      "id": "PSM202-D",
+      "airline": "Allegiant",
+      "flightNo": "G4 202",
+      "origin": null,
+      "destination": "FLL",
+      "sched": "2025-09-05T19:30:00-04:00",
+      "est": null,
+      "gate": "4",
+      "status": "ON_TIME",
+      "dir": "DEP"
+    },
+    {
+      "id": "PSM303-D",
+      "airline": "United",
+      "flightNo": "UA 303",
+      "origin": null,
+      "destination": "EWR",
+      "sched": "2025-09-05T20:00:00-04:00",
+      "est": "2025-09-05T20:40:00-04:00",
+      "gate": "3",
+      "status": "DELAYED",
+      "dir": "DEP"
+    }
+  ]
+}
