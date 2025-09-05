@@ -6,7 +6,7 @@ export default function App() {
   const { data, isLoading, isError, error } = useFlights({ url: FLIGHTS_URL });
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-screen-3xl mx-auto p-8">
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-wide">
@@ -37,7 +37,7 @@ function FlightTable({ flights }) {
   return (
     <div className="w-full">
       {/* desktop/tablet */}
-      <table className="hidden md:table w-full border-collapse">
+      <table className="hidden md:table w-full border-collapse table-fixed">
         <thead className="bg-slate-800/80">
           <tr className="text-left text-slate-300">
             <Th>Dir</Th>
