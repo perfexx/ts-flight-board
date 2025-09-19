@@ -32,7 +32,7 @@ export default function SplitFlapStatus({ value = "", size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`dark ${size}`}  // try "darkBordered XL" if you want bolder look
+      className={`lightBordered ${size}`}  // try "darkBordered XL" if you want bolder look
       words={words}               // ✅ word-mode
       length={length}
       value={val}

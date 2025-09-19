@@ -1,12 +1,13 @@
 import React from "react";
 import { useFlights } from "./useFlights.js";
 import { FLIGHTS_URL } from "./config.js";
-import SplitFlapWord from "./components/SplitFlatWord.jsx";
+// import SplitFlapWord from "./components/SplitFlatWord.jsx";
 import SplitFlapNumber from "./components/SplitFlatNumber.jsx";
 import SplitFlapGate from "./components/SplitFlatGate.jsx";
 import SplitFlapStatus from "./components/SplitFlapStatus.jsx";
 import SplitFlapTime from "./components/SplitFlapTime.jsx";
 import SplitFlapPlace from "./components/SplitFlapPlace.jsx";
+import logos from "./logos.js";
 
 export default function App() {
   const {
@@ -30,106 +31,158 @@ export default function App() {
     return () => clearTimeout(t);
   }, [isFetching]);
 
+  const arrFlights = data?.flights?.filter((f) => f.dir === "ARR") ?? [];
+  const depFlights = data?.flights?.filter((f) => f.dir === "DEP") ?? [];
+
   return (
     <div className="w-full max-w-screen-3xl mx-auto p-8">
-      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-wide">
-            {(data?.airport || "PSM")} • Arrivals &amp; Departures
-          </h1>
-          {/* <p className="text-slate-400 text-sm">
-            Source: {FLIGHTS_URL === "mock" ? "Mock JSON" : FLIGHTS_URL}
-          </p> */}
-        </div>
+      <header className="mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2">
+          {/* left spacer on desktop */}
+          <div className="hidden sm:block" />
 
-        <span className="text-xs border-stone-300/60 tabular-nums flex items-center gap-2">
-          Last updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"}
-          {showPulse && (
-            <span
-              className="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-400/30 animate-pulse"
-              title="Refreshing"
+          {/* centered logo */}
+          <div className="flex justify-center">
+            <img
+              src={new URL("./assets/logo.webp", import.meta.url).href}
+              alt="PSM Airport"
+              className="h-24 w-auto object-contain"
             />
-          )}
-        </span>
+          </div>
+
+          {/* last updated: right on desktop, centered on mobile */}
+          <div className="flex sm:justify-end justify-center">
+            <span className="text-xs tabular-nums flex items-center gap-2">
+              Last updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"}
+              {showPulse && (
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-400/30 animate-pulse"
+                  title="Refreshing"
+                />
+              )}
+            </span>
+          </div>
+        </div>
       </header>
 
-      <div className="relative bg-stone-800/60 rounded-xl overflow-hidden ring-1 ring-stone-300/60">
-        {isError && (
-          <div className="p-6 text-rose-400">
-            Error loading flights.
-            <pre className="mt-2 text-xs text-rose-300 whitespace-pre-wrap">
-              {String(error?.message || error)}
-            </pre>
+      {/* Two-column layout: Arrivals (left) / Departures (right) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* ARRIVALS */}
+        <section className="relative overflow-hidden">
+          
+          <div className="flex items-center gap-3">
+            <img
+              src={new URL("./assets/arr.png", import.meta.url).href}
+              alt="Arrivals"
+              className="h-10 w-10 object-contain"
+            />
+            <h1 className="text-5xl font-thin tracking-wide text-[#ffd401]">ARRIVALS</h1>
           </div>
-        )}
+       
 
-        {/* Show cached table if present; only show loader before first data */}
-        {data ? (
-          <FlightTable flights={data.flights} />
-        ) : (
-          <div className="p-6">Loading flights…</div>
-        )}
+          {isError && arrFlights.length === 0 ? (
+            <div className="p-6 text-rose-400">
+              Error loading flights.
+              <pre className="mt-2 text-xs text-rose-300 whitespace-pre-wrap">{String(error?.message || error)}</pre>
+            </div>
+          ) : data ? (
+            <FlightTable flights={arrFlights} mode="ARR" />
+          ) : (
+            <div className="p-6">Loading flights…</div>
+          )}
+        </section>
 
-        {/* Optional: subtle badge while background refreshing */}
-        {/* {isFetching && (
-          <div className="absolute top-2 right-2 text-[11px] px-2 py-0.5 rounded bg-stone-700/70 text-stone-300 animate-pulse">
-            Refreshing…
+        {/* DEPARTURES */}
+        <section className="relativeoverflow-hidden ">
+          <div className="flex items-center gap-3">
+            <img
+              src={new URL("./assets/dep.png", import.meta.url).href}
+              alt="Arrivals"
+              className="h-10 w-10 object-contain"
+            />
+            <h1 className="text-5xl font-thin tracking-wide text-[#ffd401]">DEPARTURES</h1>
           </div>
-        )} */}
+
+          {isError && depFlights.length === 0 ? (
+            <div className="p-6 text-rose-400">
+              Error loading flights.
+              <pre className="mt-2 text-xs text-rose-300 whitespace-pre-wrap">{String(error?.message || error)}</pre>
+            </div>
+          ) : data ? (
+            <FlightTable flights={depFlights} mode="DEP" />
+          ) : (
+            <div className="p-6">Loading flights…</div>
+          )}
+        </section>
       </div>
     </div>
   );
 }
 
-function FlightTable({ flights }) {
+function FlightTable({ flights, mode = "ARR" }) {
   return (
-    <div className="w-full">
-      {/* desktop/tablet */}
-      <table className="hidden md:table w-full border-collapse table-fixed">
-        <thead className="bg-[#333333]">
-          <tr className="text-left text-stone-300">
-            {/* <Th>Dir</Th> */}
+    <div className="w-full mt-8">
+      <table className="hidden md:table w-full border-collapse table-auto border-0">
+        <thead className="bg-[#002B55]">
+          <tr className="text-left text-white">
             <Th>Airline</Th>
             <Th>Flight</Th>
-            <Th>From/To</Th>
-            <Th>Sched → Est</Th>
+            <Th>{mode === "ARR" ? "From" : "To"}</Th>
+            <Th>Sched</Th>
+            <Th>Est</Th>
             <Th>Gate</Th>
             <Th>Status</Th>
           </tr>
         </thead>
         <tbody>
           {flights.map((f) => (
-            <tr key={f.id} className="border-t border-stone-300/60 bg-[#333333]">
-              {/* <Td>{f.dir || (f.origin ? "ARR" : "DEP")}</Td> */}
+            <tr key={f.id} className="border-t border-stone-300/60 bg-[#002B55] first:border-t-0">
               <Td className="leading-none text-left">
-                <div className="min-w-[12ch]">
-                  <SplitFlapWord value={f.airline} min={12} size="M" />
-                </div>
-              </Td>
-              <Td className="leading-none">
-                <div className="min-w-[6ch]">
-                  <SplitFlapNumber value={f.flightNo} min={6} size="M" />
-                </div>
-              </Td>
-              <Td className="leading-none">
-                <div className="min-w-[4ch]">
-                  <SplitFlapPlace value={f.origin || f.destination || "—"} min={3} size="M" />
-                </div>
-              </Td>
-              <Td className="leading-none">
-                <div className="flex items-center gap-2">
-                  <SplitFlapTime value={f.sched} size="M" />
-                  {f.est && (
-                    <>
-                      <span className="border-stone-300/60">→</span>
-                      <SplitFlapTime value={f.est} size="M" />
-                    </>
+                <div className="h-12 w-12 flex items-center justify-center">
+                  {logos[f.carrierCode] ? (
+                    <img
+                      src={logos[f.carrierCode]}
+                      alt={f.airline || "Airline logo"}
+                      className="h-12 w-12 object-contain"
+                    />
+                  ) : (
+                    <div
+                      className="h-12 w-12 bg-white rounded flex items-center justify-center uppercase text-[10px] tracking-widest text-stone-800"
+                      title={f.airline || "Airline logo"}
+                      aria-label={f.airline || "Airline logo"}
+                    >
+                      LOGO
+                    </div>
                   )}
                 </div>
               </Td>
               <Td className="leading-none">
+                <div className="min-w-[6ch]">
+                  <SplitFlapNumber value={f.flightNo}  size="M" />
+                </div>
+              </Td>
+              <Td className="leading-none">
+                <div className="min-w-[4ch]">
+                  <SplitFlapPlace value={mode === "ARR" ? (f.origin || "—") : (f.destination || "—")} size="M" />
+                </div>
+              </Td>
+              <Td className="leading-none">
+                <SplitFlapTime value={f.sched} size="M" />
+              </Td>
+              <Td className="leading-none">
+                {f.est ? (
+                  <SplitFlapTime value={f.est} size="M" />
+                ) : (
+                  <span className="text-stone-400">—</span>
+                )}
+              </Td>
+              <Td className="leading-none">
                 <div className="min-w-[3ch]">
-                  <SplitFlapGate value={f.gate ?? "—"} min={2} size="M" />
+                  {f.gate ? (
+                    <SplitFlapGate value={f.gate} min={2} size="M" />
+                  ) : (
+                    <span className="text-transparent">--</span>
+                  )}
                 </div>
               </Td>
               <Td className="leading-none text-left">
@@ -155,7 +208,25 @@ function FlightTable({ flights }) {
               </div>
               <StatusBadge status={f.status} />
             </div>
-            <div className="mt-1 text-slate-300">{f.airline}</div>
+            <div className="mt-1">
+              <div className="h-10 w-10 flex items-center justify-center">
+                {logos[f.carrierCode] ? (
+                  <img
+                    src={logos[f.carrierCode]}
+                    alt={f.airline || "Airline logo"}
+                    className="h-10 w-10 object-contain"
+                  />
+                ) : (
+                  <div
+                    className="h-10 w-10 bg-stone-700/60 rounded flex items-center justify-center uppercase text-[9px] tracking-widest text-stone-300"
+                    title={f.airline || "Airline logo"}
+                    aria-label={f.airline || "Airline logo"}
+                  >
+                    LOGO
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="mt-2 text-sm">
               <span className="text-slate-400">{f.origin ? "From" : "To"}:</span>{" "}
               <span className="font-medium">{f.origin || f.destination || "—"}</span>
@@ -182,10 +253,10 @@ function FlightTable({ flights }) {
 }
 
 function Th({ children }) {
-  return <th className="py-3 px-4 text-2xl font-semibold tracking-wide">{children}</th>;
+  return <th className="py-2 px-0 text-xl font-semibold tracking-wide">{children}</th>;
 }
-function Td({ children }) {
-  return <td className="py-3 px-4 text-sm">{children}</td>;
+function Td({ children, className = "" }) {
+  return <td className={`py-2 px-0 text-sm whitespace-nowrap ${className}`}>{children}</td>;
 }
 
 function StatusBadge({ status = "" }) {

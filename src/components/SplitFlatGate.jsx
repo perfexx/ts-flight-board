@@ -13,9 +13,9 @@ export default function SplitFlapGate({ value = "", min = 2, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`dark ${size}`}     // try "darkBordered M" if you want a bolder look
+      className={`lightBordered ${size}`}     // try "darkBordered M" if you want a bolder look
       chars={chars}                  // per-character mode
-      length={length}                // ensure ≥ max gate length
+      // length={length}                // ensure ≥ max gate length
       value={val}
       hinge={true}
       timing={30}

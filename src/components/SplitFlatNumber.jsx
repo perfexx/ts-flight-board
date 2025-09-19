@@ -14,9 +14,9 @@ export default function SplitFlapNumber({ value = "", min = 5, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`dark ${size}`}  // try "darkBordered L"
+      className={`lightBordered ${size}`}  // try "darkBordered L"
       chars={chars}
-      length={length}
+      // length={length}
       value={val}
       hinge={true}
       timing={30}

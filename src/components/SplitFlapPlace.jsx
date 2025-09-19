@@ -14,7 +14,7 @@ export default function SplitFlapPlace({ value = "", min = 3, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`dark ${size}`}   // try "darkBordered L" if you want bolder
+      className={`lightBordered ${size}`}   // try "darkBordered L" if you want bolder
       chars={chars}
       length={length}
       value={val}
