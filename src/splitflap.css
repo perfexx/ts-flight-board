@@ -1,0 +1,36 @@
+/* src/splitflap.css */
+/* Apply these styles only where you add className="splitflap" to FlapDisplay */
+
+.splitflap [data-kind="digit"] {
+  /* Visuals */
+  color: #e5e7eb;            /* text (slate-200) */
+  background-color: #002B55; /* your brand blue */
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Box sizing (tweak to taste) */
+  line-height: 1.0em;        /* adjust for vertical centering */
+  width: 1.1ch;              /* base tile width */
+  height: 1.05em;            /* tile height */
+
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Single-word flaps can stretch */
+.splitflap [data-kind="digit"][data-mode="words"] { width: 100%; }
+
+/* A–Z tiles a bit wider for readability */
+.splitflap [data-kind="digit"][data-mode="alpha"] { width: 1.6ch; }
+
+/* Hinge stripe thickness & color */
+.splitflap [data-kind="hinge"] {
+  display: block;
+  width: 100%;
+  height: .9px;                        /* thicker hinge so it’s clearly visible */
+  background-color: #fff; /* lighter gray/white hinge */
+  margin: -1px 0;                     /* overlap slightly so it looks embedded */
+}
+
+/* Optional: tighten spacing between tiles */
+.splitflap [data-kind="digit"] + [data-kind="digit"] { margin-left: 0.09rem; }

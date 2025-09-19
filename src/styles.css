@@ -3,3 +3,4 @@
 /* Tell Tailwind where to scan for classes */
 @source "./index.html";
 @source "./src/**/*.{js,jsx}";
+@import "./splitflap.css";

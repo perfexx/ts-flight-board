@@ -14,12 +14,13 @@ export default function SplitFlapNumber({ value = "", min = 5, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`lightBordered ${size}`}  // try "darkBordered L"
+      className={`splitflap lightBordered ${size} !justify-start text-left`}
       chars={chars}
       // length={length}
       value={val}
       hinge={true}
       timing={30}
+      padMode="end"
     />
   );
 }
