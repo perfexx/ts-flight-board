@@ -21,7 +21,7 @@ export default function SplitFlapWord({ value = "", min = 10, size = "L" }) {
 
   return (
     <FlapDisplay
-      className={`dark ${size} !justify-start text-left`}   // try "darkBordered XL" for thicker look
+      className={`splitflap dark ${size} !justify-start text-left`}   // try "darkBordered XL" for thicker look
       words={words}                // ✅ word mode
       length={length}
       value={val}

@@ -13,7 +13,7 @@ export default function SplitFlapTime({ value, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`lightBordered ${size}`}       // try "darkBordered L" if you want bolder
+      className={`splitflap lightBordered ${size}`}       // try "darkBordered L" if you want bolder
       chars={chars}
       length={length}
       value={time}

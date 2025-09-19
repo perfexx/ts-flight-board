@@ -19,6 +19,13 @@ export default function App() {
     dataUpdatedAt,
   } = useFlights({ url: FLIGHTS_URL });
 
+  // Live clock (updates every second)
+  const [now, setNow] = React.useState(() => new Date());
+  React.useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   // Keep the pulsing dot visible briefly so it’s noticeable
   const [showPulse, setShowPulse] = React.useState(false);
   React.useEffect(() => {
@@ -36,7 +43,7 @@ export default function App() {
 
   return (
     <div className="w-full max-w-screen-3xl mx-auto p-8">
-      <header className="mb-10">
+      <header className="mb-15">
         <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2">
           {/* left spacer on desktop */}
           <div className="hidden sm:block" />
@@ -46,20 +53,28 @@ export default function App() {
             <img
               src={new URL("./assets/logo.webp", import.meta.url).href}
               alt="PSM Airport"
-              className="h-24 w-auto object-contain"
+              className="h-40 w-auto object-contain"
             />
           </div>
 
           {/* last updated: right on desktop, centered on mobile */}
           <div className="flex sm:justify-end justify-center">
-            <span className="text-xs tabular-nums flex items-center gap-2">
-              Last updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"}
-              {showPulse && (
-                <span
-                  className="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-400/30 animate-pulse"
-                  title="Refreshing"
-                />
-              )}
+            <span className="tabular-nums flex items-center gap-3">
+              {/* Live clock */}
+              {/* Last updated + pulse */}
+              <span className="text-[11px] opacity-80 flex items-center gap-2">
+                {/* Updated: {dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString() : "--:--:--"} */}
+                {showPulse && (
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 ring-2 ring-sky-400/30 animate-pulse"
+                    title="Refreshing"
+                  />
+                )}
+              </span>
+              <span className="text-base md:text-xl font-extralight">
+                {now.toLocaleTimeString()}
+              </span>
+
             </span>
           </div>
         </div>
@@ -68,7 +83,7 @@ export default function App() {
       {/* Two-column layout: Arrivals (left) / Departures (right) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* ARRIVALS */}
-        <section className="relative overflow-hidden">
+        <section className="relative overflow-hidden bg-[#092137] p-6 rounded-xl">
           
           <div className="flex items-center gap-3">
             <img
@@ -76,7 +91,7 @@ export default function App() {
               alt="Arrivals"
               className="h-10 w-10 object-contain"
             />
-            <h1 className="text-5xl font-thin tracking-wide text-[#ffd401]">ARRIVALS</h1>
+            <h1 className="text-5xl font-thin tracking-wide text-[#e9c303]">ARRIVALS</h1>
           </div>
        
 
@@ -93,14 +108,14 @@ export default function App() {
         </section>
 
         {/* DEPARTURES */}
-        <section className="relativeoverflow-hidden ">
+        <section className="relative overflow-hidden bg-[#092137] p-6 rounded-xl">
           <div className="flex items-center gap-3">
             <img
               src={new URL("./assets/dep.png", import.meta.url).href}
               alt="Arrivals"
               className="h-10 w-10 object-contain"
             />
-            <h1 className="text-5xl font-thin tracking-wide text-[#ffd401]">DEPARTURES</h1>
+            <h1 className="text-5xl font-thin tracking-wide text-[#e9c303]">DEPARTURES</h1>
           </div>
 
           {isError && depFlights.length === 0 ? (
@@ -121,9 +136,9 @@ export default function App() {
 
 function FlightTable({ flights, mode = "ARR" }) {
   return (
-    <div className="w-full mt-8">
+    <div className="w-full mt-8 ">
       <table className="hidden md:table w-full border-collapse table-auto border-0">
-        <thead className="bg-[#002B55]">
+        <thead className="bg-[#092137]">
           <tr className="text-left text-white">
             <Th>Airline</Th>
             <Th>Flight</Th>
@@ -136,7 +151,7 @@ function FlightTable({ flights, mode = "ARR" }) {
         </thead>
         <tbody>
           {flights.map((f) => (
-            <tr key={f.id} className="border-t border-stone-300/60 bg-[#002B55] first:border-t-0">
+            <tr key={f.id} className="border-t border-stone-300/20 bg-[#002B55] first:border-t-0">
               <Td className="leading-none text-left">
                 <div className="h-12 w-12 flex items-center justify-center">
                   {logos[f.carrierCode] ? (
@@ -253,10 +268,10 @@ function FlightTable({ flights, mode = "ARR" }) {
 }
 
 function Th({ children }) {
-  return <th className="py-2 px-0 text-xl font-semibold tracking-wide">{children}</th>;
+  return <th className="py-2 px-0 text-xl font-semibold tracking-wide ">{children}</th>;
 }
 function Td({ children, className = "" }) {
-  return <td className={`py-2 px-0 text-sm whitespace-nowrap ${className}`}>{children}</td>;
+  return <td className={`bg-[#092137] py-2 px-0 text-sm whitespace-nowrap ${className}`}>{children}</td>;
 }
 
 function StatusBadge({ status = "" }) {

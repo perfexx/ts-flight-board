@@ -32,12 +32,12 @@ export default function SplitFlapStatus({ value = "", size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`lightBordered ${size}`}  // try "darkBordered XL" if you want bolder look
+      className={`splitflap lightBordered ${size}`}  // try "darkBordered XL" if you want bolder look
       words={words}               // ✅ word-mode
       length={length}
       value={val}
       hinge={true}
-      timing={30}
+      timing={33}
     />
   );
 }

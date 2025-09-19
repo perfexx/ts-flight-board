@@ -13,7 +13,7 @@ export default function SplitFlapGate({ value = "", min = 2, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`lightBordered ${size}`}     // try "darkBordered M" if you want a bolder look
+      className={`splitflap lightBordered ${size}`}     // try "darkBordered M" if you want a bolder look
       chars={chars}                  // per-character mode
       // length={length}                // ensure ≥ max gate length
       value={val}

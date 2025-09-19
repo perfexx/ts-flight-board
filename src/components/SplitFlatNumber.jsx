@@ -14,7 +14,7 @@ export default function SplitFlapNumber({ value = "", min = 5, size = "M" }) {
 
   return (
     <FlapDisplay
-      className={`splitflap lightBordered ${size} !justify-start text-left`}
+      className={`splitflap lightBordered ${size}`}
       chars={chars}
       // length={length}
       value={val}
