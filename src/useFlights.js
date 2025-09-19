@@ -203,7 +203,7 @@ export function useFlights({
       // ---- Airport-style behavior: filter to today's window & collapse duplicates ----
       const nowLocal = new Date();
       const startOfToday = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), nowLocal.getDate(), 0, 0, 0, 0);
-      const endWindow = new Date(startOfToday.getTime() + 36 * 60 * 60 * 1000); // today + 12h buffer
+      const endWindow = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000); // today only (no next-day buffer)
 
       const ms = (s) => (s ? new Date(s).getTime() : NaN);
       const inWindow = (f) => {
